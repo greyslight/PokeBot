@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from config import token
-from logic import Pokemon
+from logic import Pokemon, Wizard, Fighter
 
 # Setting up intents for the bot
 intents = discord.Intents.default()  # Getting the default settings
@@ -34,6 +34,21 @@ async def go(ctx):
             await ctx.send("Failed to upload an image of the pokémon.")
     else:
         await ctx.send("You've already created your own Pokémon.")  # A message that is printed whether a Pokémon has already been created
+
+@bot.command()
+async def attack(ctx):
+    target = ctx.message.mentions[0] if ctx.message.mentions else None  # Mendapatkan pengguna yang disebutkan dalam pesan
+    if target:  # Memeriksa apakah ada pengguna yang disebutkan
+        # Memeriksa apakah yang diserang dan yang bertahan memiliki Pokémon 
+        if target.name in Pokemon.pokemons and ctx.author.name in Pokemon.pokemons:
+            enemy = Pokemon.pokemons[target.name]  # Mendapatkan Pokémon pemain bertahan
+            attacker = Pokemon.pokemons[ctx.author.name]  # Mendapatkan Pokémon penyerang 
+            result = await attacker.attack(enemy)  # Melakukan serangan dan mendapatkan hasilnya
+            await ctx.send(result)  # Mengirimkan hasil serangan
+        else:
+            await ctx.send("Kedua player harus memiliki Pokémon untuk memulai pertempuran!")  # Mengumumkan bahwa setidaknya salah satu petarung tidak memiliki Pokémon 
+    else:
+        await ctx.send("Tentukan pengguna yang ingin Kalian serang dengan menyebut mereka.")  # Meminta untuk menyebutkan pengguna untuk menyerang
 
 @bot.command()
 async def info(ctx):

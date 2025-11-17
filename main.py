@@ -50,22 +50,6 @@ async def attack(ctx):
     else:
         await ctx.send("Tentukan pengguna yang ingin Kalian serang dengan menyebut mereka.")  # Meminta untuk menyebutkan pengguna untuk menyerang
 
-@bot.command()
-async def info(ctx):
-    author = ctx.author.name  # Getting the name of the message's author
-    # Check whether the user already has a Pokémon. If not, then...
-    if author in Pokemon.pokemons.keys():
-        pokemon = Pokemon.pokemons[author]  # Creating a new Pokémon
-        await ctx.send(await pokemon.info())  # Sending information about the Pokémon
-        image_url = await pokemon.show_img()  # Getting the URL of the Pokémon image
-        if image_url:
-            embed = discord.Embed()  # Creating an embed message
-            embed.set_image(url=image_url)  # Setting up the Pokémon's image
-            await ctx.send(embed=embed)  # Sending an embedded message with an image
-        else:
-            await ctx.send("Failed to upload an image of the pokémon.")
-    else:
-        await ctx.send("You haven't made your own Pokémon.")  # A message that is printed whether a Pokémon has already been created
 
 
 # Running the bot

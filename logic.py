@@ -1,7 +1,13 @@
 import aiohttp  # A library for asynchronous HTTP requests
 import random
 import asyncio
+from datetime import datetime, timedelta
 
+now = datetime.now()
+start_date = datetime(2024, 1, 25)
+future_date = start_date + timedelta(days=7)
+print("Waktu dan tanggal saat ini:", now)
+print("Tanggal di 7 hari mendatang di hitung dari sekarang:", future_date)
 class Pokemon:
     pokemons = {}
     # Object initialisation (constructor)
@@ -10,6 +16,7 @@ class Pokemon:
         self.pokemon_number = random.randint(1, 1000)
         self.name = None
         self.abilities = []
+        self.last_feed_time = datetime.now()
         self.hp = random.randint(100,300)
         self.sp = random.randint(15,25)
         if pokemon_trainer not in Pokemon.pokemons:
@@ -79,6 +86,16 @@ class Pokemon:
             enemy.hp = 0
             return f"@{self.pokemon_trainer} menang melawan @{enemy.pokemon_trainer}!"
         
+    async def feed(self, feed_interval = 20, hp_increase = 10 ):
+        current_time = datetime.current()  
+        delta_time = timedelta(hours=feed_interval)  
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Kesehatan Pokemon dipulihkan. HP saat ini: {self.hp}"
+        else:
+            return f"Kalian dapat memberi makan Pokémon kalian di: {current_time-delta_time}"
+        
 
 class Fighter(Pokemon):
     async def attack(self, enemy):
@@ -88,9 +105,29 @@ class Fighter(Pokemon):
         self.sp -= kekuatan_super
         return hasil + f"\nPetarung menggunakan serangan super dengan kekuatan:{kekuatan_super} "
 
+    async def feed(self, feed_interval = 25, hp_increase = 20 ):
+        current_time = datetime.current()  
+        delta_time = timedelta(hours=feed_interval)  
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Kesehatan Pokemon dipulihkan. HP saat ini: {self.hp}"
+        else:
+            return f"Kalian dapat memberi makan Pokémon kalian di: {current_time-delta_time}"
+
 class Wizard(Pokemon):
     async def attack(self, enemy):
         return await super().attack(enemy)
+    
+    async def feed(self, feed_interval = 10, hp_increase = 8 ):
+        current_time = datetime.current()  
+        delta_time = timedelta(hours=feed_interval)  
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Kesehatan Pokemon dipulihkan. HP saat ini: {self.hp}"
+        else:
+            return f"Kalian dapat memberi makan Pokémon kalian di: {current_time-delta_time}"
     
 async def main():
     wizard = Wizard("username1")
